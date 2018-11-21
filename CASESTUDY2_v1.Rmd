@@ -70,8 +70,64 @@ Data
 
 
 
+
+4.	Deeper Analysis and Visualization 
+
+4a)	You should make all of these appealing looking.  Remember to include things like a clean, informative title, axis labels that are in plain English, and readable axis values that do not overlap.
+
+4b)	Create bar charts in ggplot or similar. The bars should be in descending order, Use any color palette of your choice other than the default.
 ```{r, echo=True}
-write.csv(Data, "Datacleaning.csv", sep=" ")
+library(plyr)
+library(ggplot2)
+Dep = count(Data$Department)
+Dep<- Dep[order(Dep$freq),]
+Dep$x <- factor(Dep$x, levels = Dep$x[order(Dep$freq)])
+ggplot(data=Dep, aes(x=x, y=freq, fill='red'))+geom_bar(stat='identity')
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+4c)	Is there a relationship between Age and Income?  Create a scatterplot and make an assessment of whether there is a relationship.  Color each point based on the Gender of the participant.  You’re welcome to use lm() or similar functions to back up your claims
+
+```{r, echo=TRUE}
+library(ggplot2)
+Age <- Data$Age
+Income <- Data$MonthlyIncm
+Gender <- Data$Gender
+ggplot(Data, aes (Income, Age, color = Gender)) + geom_point()+ggtitle("Correlation between income and age")+geom_smooth(method = lm)
+cor.test(Age,Income)
+```
+
+
+4d)	What about Life Satisfaction?  Create another scatterplot.  Is there a discernible relationship there to what?   
+
+```{r,echo=TRUE}
+ggplot(Data, aes (Data$JobSatfction, Data$Age, color = Gender)) + geom_point()+ggtitle("Correlation between Job satisfaction and age")+geom_smooth(method = lm)
+cor.test(Data$JobSatfction,Data$Age)
+cor.test(Data$JobSatfction,Data$DailyRate)
+cor.test(Data$JobSatfction,Data$DistFromHome)
+cor.test(Data$JobSatfction,Data$Education)
+cor.test(Data$JobSatfction,Data$EmployeeCnt)
+cor.test(Data$JobSatfction,Data$EmployeeNum)
+cor.test(Data$JobSatfction,Data$EnvSatfction)
+cor.test(Data$JobSatfction,Data$HourlyRate)
+cor.test(Data$JobSatfction,Data$JobInvolmnt)
+cor.test(Data$JobSatfction,Data$JobLevel)
+cor.test(Data$JobSatfction,Data$MonthlyIncm)
+cor.test(Data$JobSatfction,Data$MonthlyRate)
+cor.test(Data$JobSatfction,Data$NumCmpWorked)
+cor.test(Data$JobSatfction,Data$PrcntSalHike)
+cor.test(Data$JobSatfction,Data$PerfRating)
+cor.test(Data$JobSatfction,Data$RlnSatfctn)
+cor.test(Data$JobSatfction,Data$StandardHrs)
+cor.test(Data$JobSatfction,Data$StockOptLvl)
+cor.test(Data$JobSatfction,Data$TotWrkngYrs)
+cor.test(Data$JobSatfction,Data$WrkLifeBal)
+cor.test(Data$JobSatfction,Data$YrsAtCompany)
+cor.test(Data$JobSatfction,Data$YrsInCrntRl)
+cor.test(Data$JobSatfction,Data$YrsSncLstPrm)
+cor.test(Data$JobSatfction,Data$JobSatfction)
+
+```
+
+
+
+
