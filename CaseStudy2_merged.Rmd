@@ -69,6 +69,37 @@ Data
 ```
 
 
+3.	Preliminary Analysis
+3a)	Remove all observations where the participant is under age 18.  No further analysis of underage individuals is permitted by your client.  Remove any other age outliers as you see fit, but be sure to tell what you're doing and why?
+
+```{r, echo=TRUE}
+install.packages("ggplot2")
+library("ggplot2")
+install.packages("investr")
+library("investr")
+summary(Data)
+hist(Data$WrkLifeBal, Data$YrsAtCompany)
+```
+
+3b)	Please provide (in table format or similar), descriptive statistics on at least 7 variables (age, Income, etc.).  Create a simple histogram for two of them.  Comment on the shape of the distribution in your markdown.
+```{r, echo=TRUE}
+table(Data$Gender, Data$Education, Data$JobRole)
+```
+
+3c) Give the frequencies (in table format or similar) for Gender, Education, and Occupation.  They can be separate tables, if that's your choice.
+
+```{r, echo=TRUE}
+table(Data$Gender, Data$Education, Data$JobRole)
+
+```
+
+
+3d)	Give the counts (again, table) of management positions.
+```{r, echo=TRUE}
+table(Data$JobLevel)
+```
+
+
 
 
 4.	Deeper Analysis and Visualization 
@@ -81,8 +112,8 @@ library(plyr)
 library(ggplot2)
 Dep = count(Data$Department)
 Dep<- Dep[order(Dep$freq),]
-Dep$x <- factor(Dep$x, levels = Dep$x[order(-Dep$freq)])
-ggplot(data=Dep, aes(x=x, y=freq, fill='red'))+geom_bar(stat='identity')+xlab('Departments')+ylab('Frequency')
+Dep$x <- factor(Dep$x, levels = Dep$x[order(Dep$freq)])
+ggplot(data=Dep, aes(x=x, y=freq, fill='red'))+geom_bar(stat='identity')
 ```
 
 4c)	Is there a relationship between Age and Income?  Create a scatterplot and make an assessment of whether there is a relationship.  Color each point based on the Gender of the participant.  You’re welcome to use lm() or similar functions to back up your claims
@@ -100,36 +131,31 @@ cor.test(Age,Income)
 4d)	What about Life Satisfaction?  Create another scatterplot.  Is there a discernible relationship there to what?   
 
 ```{r,echo=TRUE}
-
-cor.test(Data$EnvSatfction,Data$Age)
-cor.test(Data$EnvSatfction,Data$DailyRate)
-cor.test(Data$EnvSatfction,Data$DistFromHome)
-cor.test(Data$EnvSatfction,Data$Education)
-cor.test(Data$EnvSatfction,Data$EmployeeCnt)
-cor.test(Data$EnvSatfction,Data$EmployeeNum)
-cor.test(Data$EnvSatfction,Data$JobSatfction)
-cor.test(Data$EnvSatfction,Data$HourlyRate)
-cor.test(Data$EnvSatfction,Data$JobInvolmnt)
-cor.test(Data$EnvSatfction,Data$JobLevel)
-cor.test(Data$EnvSatfction,Data$MonthlyIncm)
-cor.test(Data$EnvSatfction,Data$MonthlyRate)
-cor.test(Data$EnvSatfction,Data$NumCmpWorked)
-cor.test(Data$EnvSatfction,Data$PrcntSalHike)
-cor.test(Data$EnvSatfction,Data$PerfRating)
-cor.test(Data$EnvSatfction,Data$RlnSatfctn)
-cor.test(Data$EnvSatfction,Data$StandardHrs)
-cor.test(Data$EnvSatfction,Data$StockOptLvl)
-cor.test(Data$EnvSatfction,Data$TotWrkngYrs)
-cor.test(Data$EnvSatfction,Data$WrkLifeBal)
-cor.test(Data$EnvSatfction,Data$YrsAtCompany)
-cor.test(Data$EnvSatfction,Data$YrsInCrntRl)
-cor.test(Data$EnvSatfction,Data$YrsSncLstPrm)
-cor.test(Data$EnvSatfction,Data$EnvSatfction)
-
-ggplot(Data, aes (Data$EnvSatfction, Data$HourlyRate)) + geom_point()+ggtitle("Correlation between Environment satisfaction and Hourly Rate")+geom_smooth(method = lm)+xlab('Envoronment satisfaction')+ylab('Hourly Rate')
-
-
-
+ggplot(Data, aes (Data$JobSatfction, Data$Age, color = Gender)) + geom_point()+ggtitle("Correlation between Job satisfaction and age")+geom_smooth(method = lm)
+cor.test(Data$JobSatfction,Data$Age)
+cor.test(Data$JobSatfction,Data$DailyRate)
+cor.test(Data$JobSatfction,Data$DistFromHome)
+cor.test(Data$JobSatfction,Data$Education)
+cor.test(Data$JobSatfction,Data$EmployeeCnt)
+cor.test(Data$JobSatfction,Data$EmployeeNum)
+cor.test(Data$JobSatfction,Data$EnvSatfction)
+cor.test(Data$JobSatfction,Data$HourlyRate)
+cor.test(Data$JobSatfction,Data$JobInvolmnt)
+cor.test(Data$JobSatfction,Data$JobLevel)
+cor.test(Data$JobSatfction,Data$MonthlyIncm)
+cor.test(Data$JobSatfction,Data$MonthlyRate)
+cor.test(Data$JobSatfction,Data$NumCmpWorked)
+cor.test(Data$JobSatfction,Data$PrcntSalHike)
+cor.test(Data$JobSatfction,Data$PerfRating)
+cor.test(Data$JobSatfction,Data$RlnSatfctn)
+cor.test(Data$JobSatfction,Data$StandardHrs)
+cor.test(Data$JobSatfction,Data$StockOptLvl)
+cor.test(Data$JobSatfction,Data$TotWrkngYrs)
+cor.test(Data$JobSatfction,Data$WrkLifeBal)
+cor.test(Data$JobSatfction,Data$YrsAtCompany)
+cor.test(Data$JobSatfction,Data$YrsInCrntRl)
+cor.test(Data$JobSatfction,Data$YrsSncLstPrm)
+cor.test(Data$JobSatfction,Data$JobSatfction)
 
 ```
 
