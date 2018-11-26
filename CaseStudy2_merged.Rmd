@@ -1,0 +1,167 @@
+---
+title: "CASE STUDY 2"
+output: html_document
+---
+Part 2: Cleaning the raw data
+2a) Read the csv into R and take a look at the data set.  Output how many rows and columns the data.frame is.
+```{r echo=TRUE}
+Data <- read.csv('CaseStudy2-data.csv')
+
+# how many rows and columns the data.frame is?
+Dim=dim(Data)
+cat('Number of rows are equal to',Dim[1])
+cat('\nNumber of columns are equal to',Dim[2])
+
+```
+2b)The column names are either too much or not enough.  Change the column names so that they do not have spaces, underscores, slashes, and the like. All column names should be under 12 characters. Make sure you're updating your codebook with information on the tidied data set as well.
+```{r, echo=TRUE}
+# Here, columns have been changed manually becuase there is no unique algorithm to explain them all
+names(Data)<-c("Age","Attrition","BusinessTrvl","DailyRate","Department","DistFromHome","Education","EduField","EmployeeCnt","EmployeeNum","EnvSatfction","Gender","HourlyRate","JobInvolmnt","JobLevel","JobRole","JobSatfction","MaritalStat","MonthlyIncm","MonthlyRate","NumCmpWorked","Over18","OverTime","PrcntSalHike","PerfRating","RlnSatfctn","StandardHrs","StockOptLvl","TotWrkngYrs","TrngTmsLstYr","WrkLifeBal","YrsAtCompany","YrsInCrntRl","YrsSncLstPrm","YrsWthCurMgr")
+
+colnames(Data)
+```
+2c)Some columns are, due to Qualtrics, malfunctioning.
+Here we chose Over18 and TrainingTimesLastYear becuase it seems unrelevent to the performance.
+
+```{r, echo=TRUE}
+Data <- subset(Data, select = -c(Over18,TrngTmsLstYr))
+print(Data)
+```
+
+2d)Make sure your columns are the proper data types (i.e., numeric, character, etc.).  If they are incorrect, convert them. 
+```{r, echo=TRUE}
+# here we have checked all columns and correct them accordingly. Columns are either integer or factor but we have change them all to their correct format.
+Data$Age <- as.integer(Data$Age)
+Data$Attrition <- as.factor(Data$Attrition)
+Data$BusinessTrvl <- as.factor(Data$BusinessTrvl)
+Data$DailyRate <- as.integer(Data$DailyRate)
+Data$Department <- as.factor(Data$Department)
+Data$DistFromHome <- as.integer(Data$DistFromHome)
+Data$Education <- as.integer(Data$Education)
+Data$EduField <- as.factor(Data$EduField)
+Data$EmployeeCnt <- as.integer(Data$EmployeeCnt)
+Data$EmployeeNum <- as.integer(Data$EmployeeNum)
+Data$EnvSatfction <- as.integer(Data$EnvSatfction)
+Data$Gender <- as.factor(Data$Gender)
+Data$HourlyRate <- as.integer(Data$HourlyRate)
+Data$JobInvolmnt <- as.integer(Data$JobInvolmnt)
+Data$JobLevel <- as.integer(Data$JobLevel)
+Data$JobRole <- as.factor(Data$JobRole)
+Data$JobSatfction <- as.integer(Data$JobSatfction)
+Data$MaritalStat <- as.factor(Data$MaritalStat)
+Data$MonthlyIncm <- as.integer(Data$MonthlyIncm)
+Data$MonthlyRate <- as.integer(Data$MonthlyRate)
+Data$NumCmpWorked <- as.integer(Data$NumCmpWorked)
+Data$OverTime <- as.factor(Data$OverTime)
+Data$PrcntSalHike <- as.integer(Data$PrcntSalHike)
+Data$PerfRating <- as.integer(Data$PerfRating)
+Data$RlnSatfctn <- as.integer(Data$RlnSatfctn)
+Data$StandardHrs <- as.integer(Data$StandardHrs)
+Data$StockOptLvl <- as.integer(Data$StockOptLvl)
+Data$TotWrkngYrs <- as.integer(Data$TotWrkngYrs)
+Data$WrkLifeBal <- as.integer(Data$WrkLifeBal)
+Data$YrsAtCompany <- as.integer(Data$YrsAtCompany)
+Data$YrsInCrntRl <- as.integer(Data$YrsInCrntRl)
+Data$YrsSncLstPrm <- as.integer(Data$YrsSncLstPrm)
+Data$YrsWthCurMgr <- as.integer(Data$YrsWthCurMgr)
+
+Data
+```
+
+
+3.	Preliminary Analysis
+3a)	Remove all observations where the participant is under age 18.  No further analysis of underage individuals is permitted by your client.  Remove any other age outliers as you see fit, but be sure to tell what you're doing and why?
+
+```{r, echo=TRUE}
+write.csv(Data, "Datacleaning.csv", sep=" ")
+newage <- Data$Age[c(-18)]
+```
+
+3b)	Please provide (in table format or similar), descriptive statistics on at least 7 variables (age, Income, etc.).  Create a simple histogram for two of them.  Comment on the shape of the distribution in your markdown.
+```{r, echo=TRUE}
+#install.packages("ggplot2")
+library("ggplot2")
+#install.packages("investr")
+library("investr")
+summary(Data)
+hist(Data$WrkLifeBal, main='Frequency of work life balance', xlab='Work life balance')
+hist(Data$YrsAtCompany, main='Frequency of years at company', xlab = 'Years at company')
+```
+
+3c) Give the frequencies (in table format or similar) for Gender, Education, and Occupation.  They can be separate tables, if that's your choice.
+
+```{r, echo=TRUE}
+table(Data$Gender, Data$Education, Data$JobRole)
+
+```
+
+
+3d)	Give the counts (again, table) of management positions.
+```{r, echo=TRUE}
+table(Data$JobLevel)
+```
+
+
+
+
+4.	Deeper Analysis and Visualization 
+
+4a)	You should make all of these appealing looking.  Remember to include things like a clean, informative title, axis labels that are in plain English, and readable axis values that do not overlap.
+
+4b)	Create bar charts in ggplot or similar. The bars should be in descending order, Use any color palette of your choice other than the default.
+```{r}
+library(plyr)
+library(ggplot2)
+Dep = count(Data$Department)
+Dep<- Dep[order(Dep$freq),]
+Dep$x <- factor(Dep$x, levels = Dep$x[order(-Dep$freq)])
+ggplot(data=Dep, aes(x=x, y=freq, fill='red'))+geom_bar(stat='identity')
+```
+
+4c)	Is there a relationship between Age and Income?  Create a scatterplot and make an assessment of whether there is a relationship.  Color each point based on the Gender of the participant.  You’re welcome to use lm() or similar functions to back up your claims
+
+```{r, echo=TRUE}
+library(ggplot2)
+Age <- Data$Age
+Income <- Data$MonthlyIncm
+Gender <- Data$Gender
+ggplot(Data, aes (Income, Age, color = Gender)) + geom_point()+ggtitle("Correlation between income and age")+geom_smooth(method = lm)
+cor.test(Age,Income)
+```
+
+
+4d)	What about Life Satisfaction?  Create another scatterplot.  Is there a discernible relationship there to what?   
+
+```{r,echo=TRUE}
+ggplot(Data, aes (Data$EnvSatfction, Data$Age, color = Gender)) + geom_point()+ggtitle("Correlation between Job satisfaction and age")+geom_smooth(method = lm)
+cor.test(Data$EnvSatfction,Data$Age)
+cor.test(Data$EnvSatfction,Data$DailyRate)
+cor.test(Data$EnvSatfction,Data$DistFromHome)
+cor.test(Data$EnvSatfction,Data$Education)
+cor.test(Data$EnvSatfction,Data$EmployeeCnt)
+cor.test(Data$EnvSatfction,Data$EmployeeNum)
+cor.test(Data$EnvSatfction,Data$JobSatfction)
+cor.test(Data$EnvSatfction,Data$HourlyRate)
+cor.test(Data$EnvSatfction,Data$JobInvolmnt)
+cor.test(Data$EnvSatfction,Data$JobLevel)
+cor.test(Data$EnvSatfction,Data$MonthlyIncm)
+cor.test(Data$EnvSatfction,Data$MonthlyRate)
+cor.test(Data$EnvSatfction,Data$NumCmpWorked)
+cor.test(Data$EnvSatfction,Data$PrcntSalHike)
+cor.test(Data$EnvSatfction,Data$PerfRating)
+cor.test(Data$EnvSatfction,Data$RlnSatfctn)
+cor.test(Data$EnvSatfction,Data$StandardHrs)
+cor.test(Data$EnvSatfction,Data$StockOptLvl)
+cor.test(Data$EnvSatfction,Data$TotWrkngYrs)
+cor.test(Data$EnvSatfction,Data$WrkLifeBal)
+cor.test(Data$EnvSatfction,Data$YrsAtCompany)
+cor.test(Data$EnvSatfction,Data$YrsInCrntRl)
+cor.test(Data$EnvSatfction,Data$YrsSncLstPrm)
+cor.test(Data$EnvSatfction,Data$EnvSatfction)
+
+
+```
+
+
+
+
